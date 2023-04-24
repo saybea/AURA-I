@@ -1,0 +1,64 @@
+({
+ handleSuccess : function(component, event, helper) {
+  
+        var toastEvent = $A.get("e.force:showToast");
+      
+        toastEvent.setParams({
+            'title' : 'Feito!',
+            'message' : 'Item criado com Sucesso!!! =D',
+            'type' : 'success'
+        });
+        
+        toastEvent.fire();
+        /* Todo registro que é criado lá na ORG, ele é retornado para o event.
+         * No event, você recuperar esse registro novo através de uma informação que é gerado quando o registro criado (ID)
+         * Com o ID que vamos direcionar o usuário para a página de resgistro
+         */
+        
+        
+        
+        var registroCriado = event.getParams();
+        //getParams = recuperando um conjunto de informações do evento.
+        console.log(registroCriado.response.id);
+        //Trazer para o contexto minha função, do component que está recebendo ID
+        
+        var navService = component.find("navService");
+
+   //Pra qual lugar você que que eu direcione o usuário?
+   //Montar um objeto de referência, com os dados de direcionamento da página = o objeto que criamos se chama pageReference
+   //assim o usuári vai cair sempre na página certa
+        var pageReference = {
+            "type": 'standard_recordPage',
+            "attributes": {
+            "recordID":registroCriado.response.id,
+            "actionName": "view",
+            "objectApiName":"Materialcomprainterna__c"
+            
+            
+        }
+        };
+           console.log(pagReference);
+        
+            //Setar o atributo que a gente chamou lá no aura ch amado de pageReference, para o nosso objeto montado acima
+            
+            component.set("v.pageReference", pageReference)
+            
+            //pegar as informações de referencia do component
+            
+            var redirect = component.get("v.pageReference");
+            
+            //ordernar que o redirecionamento seja via navigation.
+            
+            navService.navigate(redirect);            
+            
+    },
+        
+        handleReset: function(cmp) {
+        cmp.find('field').forEach(function(f) {
+            f.reset();
+        
+        });
+        
+        
+ }
+})
